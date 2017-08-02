@@ -77,8 +77,8 @@ class ScoreBoard(object):
                 (self.gamelist[i].away == teamname)):
                 flag = False
                 for othername in teamnamelist:
-                    if ((othername == self.gamelist[i].home) or
-                        (othername == self.gamelist[i].away) and 
+                    if (((othername == self.gamelist[i].home) or
+                        (othername == self.gamelist[i].away)) and 
                         (othername != teamname)):
                         flag = True
                         break
@@ -91,31 +91,31 @@ class ScoreBoard(object):
                             remain += 1
         return wins, total-wins-remain, remain, total
 
-    def get_divi_list(self, teamname):
-        div = self.teamlist[teamname].diviname
-        divlist = list()
-        for othername in self.teamlist:
-            if self.teamlist[othername].diviname == div:
-                divlist.append(othername)
-        return divlist
+    #def get_divi_list(self, teamname):
+    #    div = self.teamlist[teamname].diviname
+    #    divlist = list()
+    #    for othername in self.teamlist:
+    #        if self.teamlist[othername].diviname == div:
+    #            divlist.append(othername)
+    #    return divlist
 
-    def get_conf_list(self, teamname):
-        conf = self.teamlist[teamname].confiname
-        confilist = list()
-        for othername in self.teamlist:
-            if self.teamlist[othername].confiname == conf:
-                confilist.append(othername)
-        return confilist
-    '''
-    def sort_by_win(self, teamnamelist):
-        for i in reverse(range(0,len(teamnamelist))):
-            for j in range(0,i):
-                if (get_win(teamnamelist[j]) < (get_win(teamnamelist[j+1]):
-                    temp = teamnamelist[j]
-                    teamnamelist[j] = teamnamelist[j+1]
-                    teamnamelist[j+1] = temp
-        return teamnamelist
-    '''
+    #def get_conf_list(self, teamname):
+    #    conf = self.teamlist[teamname].confiname
+    #    confilist = list()
+    #    for othername in self.teamlist:
+    #        if self.teamlist[othername].confiname == conf:
+    #            confilist.append(othername)
+    #    return confilist
+
+    #def sort_by_win(self, teamnamelist):
+    #    for i in reverse(range(0,len(teamnamelist))):
+    #        for j in range(0,i):
+    #            if (get_win(teamnamelist[j]) < (get_win(teamnamelist[j+1]):
+    #                temp = teamnamelist[j]
+    #                teamnamelist[j] = teamnamelist[j+1]
+    #                teamnamelist[j+1] = temp
+    #    return teamnamelist
+
     def get_lose(self, teamname, teamnamelist):
         win, lose, remain, total = self.get_win_lose_remain_total(teamname, teamnamelist)
         return lose
@@ -129,9 +129,11 @@ class ScoreBoard(object):
                     temp = teamnamelist[j]
                     teamnamelist[j] = teamnamelist[j+1]
                     teamnamelist[j+1] = temp
-        #for i in range(0, len(teamnamelist)):
-        #    print(teamnamelist[i], self.get_win_lose_remain_total(teamnamelist[i], totalteamlist))
-        return teamnamelist
+        scorelist = list()
+        for i in range(0, len(teamnamelist)):
+            win, lose, remain, total = self.get_win_lose_remain_total(teamnamelist[i], totalteamlist)
+            scorelist.append(lose)
+        return teamnamelist, scorelist
 
     #def must_div_lead(self, teamname):
     #    tot = self.totalnamelist
@@ -143,8 +145,13 @@ class ScoreBoard(object):
     #        return True
     #    else:
     #        return False
+
     def win_all(self, teamname):
-        pass
+        for i in range(1, self.lenth+1):
+            if (((self.gamelist[i].home == teamname) or (self.gamelist[i].away == teamname)) and
+                (self.gamelist[i].win == '')):
+                self.gamelist[i].win = teamname
+        return self
 
 
 
@@ -178,38 +185,87 @@ class Season(object):
                 confilist.append(othername)
         return confilist
 
-        
-    
-        now = self.date
-        end = self.wholegame.gamelist[len(self.wholegame.gamelist)].date
-        westlist = self.get_conf_list('Boston Celtics')
-        eastlist = self.get_conf_list('Golden State Warriors')
 
     def run(self):
         
-        def hope(self, teamname):
+        def hope(teamnow, sbn):
 
-            def step1(self, teamname):
-                pass
+            def step1(i, times, teamnow, sbn):
+                conflist = self.get_conf_list(teamnow)
+                listscore, scores = sbn.sort_by_lose(conflist)
+                if times<7:
+                    topi = i
+                    if listscore[topi] == teamnow:
+                        topi += 1
+                        i += 1
+                    while scores[i] == scores[i+1]:
+                        i += 1
+                    for j in range(topi, i+1):
+                        if listscore[j] != teamnow:
+                            #swicth (topi, j)
+                            temp = listscore[j]
+                            listscore[j] = listscore[topi]
+                            listscore[topi] = temp
+                            tmp = scores[j]
+                            scores[j] = scores[topi]
+                            scores[topi] = tmp
+                            sbn2 = copy.deepcopy(sbn)
+                            sbn2 = sbn2.win_all(listscore[topi])
+                            if step1(topi+1, times+1, teamnow, sbn2):
+                                return True
+                    return False
+                else:
+                    position = 0
+                    for ii in range(0, len(listscore)):
+                        if listscore[ii] == teamnow:
+                            position = ii
+                            if ii+1 < len(listscore):
+                                if scores[ii] == scores[ii+1]:
+                                    #swicth ii, ii+1
+                                    temp = listscore[ii]
+                                    listscore[ii] = listscore[ii+1]
+                                    listscore[ii+1] = temp
+                                    tmp = scores[ii]
+                                    scores[ii] = scores[ii+1]
+                                    scores[ii+1] = tmp
+                                else:
+                                    break
+                    if position <= 7:
+                        return True
+                    else:
+                        if scores[position] > scores[7]:
+                            if teamnow == 'Portland Trail Blazers':
+                                print(position, scores[position], scores[7])
+                            return False
+                        else:
+                            tielist = list()
+                            for ii in range(0,len(listscore)):
+                                if scores[ii] == scores[position]:
+                                    tielist.append(listscore[ii])
+                            return tie_d(teamnow, tielist, sbn)
+                
 
-            def step2(self, teamname):
-                pass
-
-            return True
-
-        def find_last(scorelist, outlist):
-            last = ''
-            i = len(scorelist)
-            while i>7:
-                if scorelist[i] not in outlist:
-                    last.appned(scorelist[i])
-
-
-                i -= 1
-
-
+            def tie_d(teamnow, tielist, sbn):
+                return True
             
+            sbn = sbn.win_all(teamnow)
+            times = 0
+            i = 0
+            return step1(i, times, teamnow, sbn)
 
+        def find_last(scorelist, scores, outlist):
+            last = list()
+            flag = True
+            for i in reversed(range(len(scorelist))):
+                if not flag:
+                    if scores[i] == scores[i+1]:
+                        last.append(scorelist[i])
+                    else:
+                        break
+                if flag and i>7:
+                    if scorelist[i] not in outlist:
+                        last.append(scorelist[i])
+                        flag = False
             return last
         
         now = self.date
@@ -219,24 +275,29 @@ class Season(object):
         while now <= end:
             nowgame = copy.deepcopy(self.wholegame)
             sb = ScoreBoard(self.teamslist, nowgame, now)
-            wscorelist = sb.sort_by_lose(westlist)
-            escorelist = sb.sort_by_lose(eastlist)
-            wlast = find_last(wscorelist, self.outlist)
-            elast = find_last(escorelist, self.outlist)
-            for last in wlast:
-                if not hope(last):
-                    self.outlist.append(last)
-                    self.outlistdate[last] = now
-            for last in elast:
-                if not hope(last):
-                    self.outlist.append(last)
-                    self.outlistdate[last] = now
+            wscorelist, wscores = sb.sort_by_lose(westlist)
+            escorelist, escores = sb.sort_by_lose(eastlist)
+            wlast = find_last(wscorelist, wscores, self.outlist)
+            elast = find_last(escorelist, escores, self.outlist)
+            sbn = copy.deepcopy(sb)
+            if wlast != []:
+                for last in wlast:
+                    if not hope(last, sbn):
+                        self.outlist.append(last)
+                        self.outlistdate[last] = now
+            sbn = copy.deepcopy(sb)
+            if elast != []:
+                for last in elast:
+                    if not hope(last, sbn):
+                        self.outlist.append(last)
+                        self.outlistdate[last] = now
             now = now + datetime.timedelta(days = 1)
         for teamname in self.totalnamelist:
             if teamname not in self.outlist:
                 self.outlist.append(teamname)
-                self.outlistdate[teamname] = 'playoff'
-        print(self.outlistdate)
+                self.outlistdate[teamname] = 'Playoff'
+        for ele in self.outlistdate:
+            print(ele, self.outlistdate[ele])
     
     def get_outlist(self):
         return self.outlistdate
@@ -247,12 +308,6 @@ if __name__ == '__main__':
     season = Season(team, game)
     season.run()
     season.get_outlist()
-
-
-
-
-
-
 
 
 

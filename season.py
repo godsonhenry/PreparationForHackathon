@@ -234,6 +234,7 @@ class Season(object):
                         return True
                     else:
                         if scores[position] > scores[7]:
+                            ###
                             if teamnow == 'Portland Trail Blazers':
                                 print(position, scores[position], scores[7])
                             return False
@@ -282,6 +283,11 @@ class Season(object):
             sbn = copy.deepcopy(sb)
             if wlast != []:
                 for last in wlast:
+                    ###
+                    if last == 'Portland Trail Blazers':
+                        print(now)
+                        for i in range(len(scores)):
+                            print(scorelist[i], scores[i])
                     if not hope(last, sbn):
                         self.outlist.append(last)
                         self.outlistdate[last] = now

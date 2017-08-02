@@ -7,12 +7,12 @@ teamlist = read_teams('Analytics_Attachment.xlsx')
 gamelist = read_games('Analytics_Attachment.xlsx')
 #gamelist.print() 
 
-sb = ScoreBoard(teamlist, gamelist, gamelist.gamelist[len(gamelist.gamelist)].date)
+#sb = ScoreBoard(teamlist, gamelist, gamelist.gamelist[len(gamelist.gamelist)].date)
 
-teamnamelist = list()
-for ele in teamlist.teamlist:
-    if teamlist.teamlist[ele].confiname == 'East':
-        teamnamelist.append(teamlist.teamlist[ele].name)
+#teamnamelist = list()
+#for ele in teamlist.teamlist:
+#    if teamlist.teamlist[ele].confiname == 'East':
+#        teamnamelist.append(teamlist.teamlist[ele].name)
 
 #print(sb.get_win_lose_remain_total('Cleveland Cavaliers', teamnamelist))
 
@@ -31,21 +31,21 @@ for ele in teamlist.teamlist:
 Se = Season(teamlist, gamelist)
 Se.run()
 '''
-d1=datetime.datetime.strptime('4/10/2017','%m/%d/%Y')
+d1=datetime.datetime.strptime('3/20/2017','%m/%d/%Y')
 
 sb = ScoreBoard(teamlist, gamelist, d1)
-sb = sb.win_all('Minnesota Timberwolves')
-sb = sb.win_all('Golden State Warriors')
-sb = sb.win_all('San Antonio Spurs')
-sb = sb.win_all('LA Clippers')
-sb = sb.win_all('Houston Rockets')
-sb = sb.win_all('Memphis Grizzlies')
-sb = sb.win_all('Oklahoma City Thunder')
-sb = sb.win_all('Utah Jazz')
+sb.win_all('Minnesota Timberwolves')
+sb.win_all('Golden State Warriors')
+sb.win_all('San Antonio Spurs')
+sb.win_all('LA Clippers')
+sb.win_all('Houston Rockets')
+sb.win_all('Memphis Grizzlies')
+sb.win_all('Oklahoma City Thunder')
+sb.win_all('Utah Jazz')
 
 teamnamelist = list()
 for ele in teamlist.teamlist:
-    if teamlist.teamlist[ele].confiname == 'East':
+    if teamlist.teamlist[ele].confiname == 'West':
         teamnamelist.append(teamlist.teamlist[ele].name)
 t,s = sb.sort_by_lose(teamnamelist)
 for i in range(len(t)):

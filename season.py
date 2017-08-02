@@ -66,7 +66,11 @@ class ScoreBoard(object):
         for ele in self.teamlist:
             self.totalnamelist.append(self.teamlist[ele].name)
 
-    
+    def print(self, teamnow):
+        for i in range(1, self.lenth+1):
+            if (self.gamelist[i].home == teamnow) or (self.gamelist[i].away == teamnow):
+                print(self.gamelist[i].home, self.gamelist[i].away, self.gamelist[i].win)
+
     def get_win_lose_remain_total(self, teamname, teamnamelist):
         wins = 0
         lose = 0
@@ -151,9 +155,28 @@ class ScoreBoard(object):
             if (((self.gamelist[i].home == teamname) or (self.gamelist[i].away == teamname)) and
                 (self.gamelist[i].win == '')):
                 self.gamelist[i].win = teamname
-        return self
 
+    def lose_to_list(self, tlist, target):
+        for i in range(1, self.lenth+1):
+            g = self.gamelist[i]
+            if  (g.win == ''):
+                if (g.home in tlist) and (g.away in target):
+                    g.win = g.away
+                if (g.away in tlist) and (g.home in target):
+                    g.win = g.home
 
+    def get_remain_games_list(self, conflist):
+        remainslist = list()
+        namelist = list()
+        for i in range(1, self.lenth+1):
+            g = self.gamelist[i]
+            if  (g.win == '') and (g.home in conflist) and (g.away in conflist):
+                remainslist.append(i)
+                if g.home not in namelist:
+                    namelist.append(g.home)
+                if g.away not in namelist:
+                    namelist.append(g.away)
+        return remainslist, namelist
 
 
 class Season(object):
@@ -176,7 +199,7 @@ class Season(object):
             if self.teamslist.teamlist[othername].diviname == div:
                 divlist.append(othername)
         return divlist
-    
+
     def get_conf_list(self, teamname):
         conf = self.teamslist.teamlist[teamname].confiname
         confilist = list()
@@ -185,6 +208,17 @@ class Season(object):
                 confilist.append(othername)
         return confilist
 
+    def get_other_conf_list(self, teamname):
+        conf = self.teamslist.teamlist[teamname].confiname
+        if conf == 'West':
+            conf = 'East'
+        else:
+            conf = 'West'
+        confilist = list()
+        for othername in self.teamslist.teamlist:
+            if self.teamslist.teamlist[othername].confiname == conf:
+                confilist.append(othername)
+        return confilist
 
     def run(self):
         
@@ -210,9 +244,37 @@ class Season(object):
                             scores[j] = scores[topi]
                             scores[topi] = tmp
                             sbn2 = copy.deepcopy(sbn)
-                            sbn2 = sbn2.win_all(listscore[topi])
+                            sbn2.win_all(listscore[topi])
                             if step1(topi+1, times+1, teamnow, sbn2):
                                 return True
+                    return False
+                else:
+                    #--------------------------------
+                    # all teams lose to other side
+                    otherconf = self.get_other_conf_list(teamnow)
+                    sbn.lose_to_list(conflist, otherconf)
+                    # remaining games
+                    glist, tlist = sbn.get_remain_games_list(conflist)
+
+                    # if dfs(remains, teamnow, sbn, teamlist, gamelist)
+                    if dfs(len(glist), teamnow, sbn, tlist, glist):
+                        return True
+                    else:
+                        return False
+
+                
+            def dfs(remains, teamnow, sbn, teamlist, gamelist):
+                conflist = self.get_conf_list(teamnow)
+                listscore, scores = sbn.sort_by_lose(conflist)                
+                if remains != 0:
+                    # dfs()
+                    ii = len(gamelist) - remains
+                    sbn.gamelist[gamelist[ii]].win = sbn.gamelist[gamelist[ii]].home
+                    if dfs(remains-1, teamnow, sbn, teamlist, gamelist):
+                        return True
+                    sbn.gamelist[gamelist[ii]].win = sbn.gamelist[gamelist[ii]].away
+                    if dfs(remains-1, teamnow, sbn, teamlist, gamelist):
+                        return True
                     return False
                 else:
                     position = 0
@@ -234,9 +296,6 @@ class Season(object):
                         return True
                     else:
                         if scores[position] > scores[7]:
-                            ###
-                            if teamnow == 'Portland Trail Blazers':
-                                print(position, scores[position], scores[7])
                             return False
                         else:
                             tielist = list()
@@ -244,12 +303,15 @@ class Season(object):
                                 if scores[ii] == scores[position]:
                                     tielist.append(listscore[ii])
                             return tie_d(teamnow, tielist, sbn)
-                
 
             def tie_d(teamnow, tielist, sbn):
+                if len(tielist) == 2:
+                    pass
+                else:
+                    pass
                 return True
             
-            sbn = sbn.win_all(teamnow)
+            sbn.win_all(teamnow)
             times = 0
             i = 0
             return step1(i, times, teamnow, sbn)
@@ -271,29 +333,27 @@ class Season(object):
         
         now = self.date
         end = self.wholegame.gamelist[len(self.wholegame.gamelist)].date
-        westlist = self.get_conf_list('Boston Celtics')
-        eastlist = self.get_conf_list('Golden State Warriors')
+        eastlist = self.get_conf_list('Boston Celtics')
+        westlist = self.get_conf_list('Golden State Warriors')
         while now <= end:
+            #---------------------------------------------------
+            print(now)
+            print(self.outlist)
             nowgame = copy.deepcopy(self.wholegame)
             sb = ScoreBoard(self.teamslist, nowgame, now)
             wscorelist, wscores = sb.sort_by_lose(westlist)
             escorelist, escores = sb.sort_by_lose(eastlist)
             wlast = find_last(wscorelist, wscores, self.outlist)
             elast = find_last(escorelist, escores, self.outlist)
-            sbn = copy.deepcopy(sb)
             if wlast != []:
                 for last in wlast:
-                    ###
-                    if last == 'Portland Trail Blazers':
-                        print(now)
-                        for i in range(len(scores)):
-                            print(scorelist[i], scores[i])
+                    sbn = copy.deepcopy(sb)
                     if not hope(last, sbn):
                         self.outlist.append(last)
                         self.outlistdate[last] = now
-            sbn = copy.deepcopy(sb)
             if elast != []:
                 for last in elast:
+                    sbn = copy.deepcopy(sb)
                     if not hope(last, sbn):
                         self.outlist.append(last)
                         self.outlistdate[last] = now

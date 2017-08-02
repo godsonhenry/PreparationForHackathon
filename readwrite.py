@@ -21,14 +21,20 @@ def read_games(filename):
 
 def write_outlist(outlist):
     wb = Workbook()
-    ws = wb.create_sheet('NBA_Clinch_Dates')
+    ws = wb.active
+    ws.title = 'NBA_Clinch_Dates'
     i = 0
     ws.cell(row=1, column=1, value='Team')
     ws.cell(row=1, column=2, value='Date Eliminated')
     for ele in outlist:
         i += 1
-        ws.cell(row=i+2, column=1, value=ele)
-        ws.cell(row=i+2, column=2, value=outlist[ele])
+        #ws.cell(row=i+1, column=1, value=ele)
+        #ws.cell(row=i+1, column=2, value=str(outlist[ele]))
+        c = 'A' + str(i)
+        d = 'B' + str(i)
+        ws[c] = ele
+        ws[d] = str(outlist[ele])
+        ws[d].number_format = '@'
     wb.save('result.xlsx')
 
 if __name__ == '__main__':

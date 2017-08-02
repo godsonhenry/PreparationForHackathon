@@ -7,8 +7,8 @@ class NBAPredictout():
     '''
     '''
     def main():
-        teamslist= read_teams('') #files 
-        gameslist = read_games('') #
+        teamslist= read_teams('Analytics_Attachment.xlsx') #files 
+        gameslist = read_games('Analytics_Attachment.xlsx') #
         se = Season(teamslist,gameslist)
         se.run()
         outlist = se.get_outlist()

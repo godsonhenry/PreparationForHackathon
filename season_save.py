@@ -156,7 +156,7 @@ class ScoreBoard(object):
                     ttlist[j+1] = temp
         scorelist = list()
         for i in range(0, len(ttlist)):
-            win, lose, remain, total = self.get_win_lose_remain_total(ttlist[i], gglist)
+            win, lose, remain, total = self.get_win_lose_remain_total(ttlist[i], gglistt)
             scorelist.append(lose)
         for i in range(0, len(ttlist)):
             if ttlist[i] == teamnow:
@@ -252,43 +252,7 @@ class Season(object):
                     else:
                         return False
 
-            
-            def dfs(remains, teamnow, sbn, teamlist, gamelist):
-                conflist = self.get_conf_list(teamnow)
-                listscore, scores = sbn.sort_by_lose(conflist) 
-                position = 0
-                for ii in range(0, len(listscore)):
-                    if listscore[ii] == teamnow:
-                        position = ii
-                        if ii+1 < len(listscore):
-                            if scores[ii] == scores[ii+1]: 
-                                #swicth ii, ii+1
-                                temp = listscore[ii]
-                                listscore[ii] = listscore[ii+1]
-                                listscore[ii+1] = temp
-                                tmp = scores[ii]
-                                scores[ii] = scores[ii+1]
-                                scores[ii+1] = tmp
-                            else:
-                                break
-                if position <= 7:
-                    return True
-                else:
-                    if scores[position] > scores[7]:
-                        return False
-                    else:
-                        tielist = list()
-                        for ii in range(0,len(listscore)):
-                            if scores[ii] == scores[position]:
-                                tielist.append(listscore[ii])
-                        #----------------------------------
-                        #----------------------------------
-                        #----------------------------------
-                        print('tie', tielist)
-                        print(scores)
-                        print(listscore)
-                        return tie_d(teamnow, tielist, sbn)                
-            '''    
+                
             def dfs(remains, teamnow, sbn, teamlist, gamelist):
                 conflist = self.get_conf_list(teamnow)
                 listscore, scores = sbn.sort_by_lose(conflist)                
@@ -335,7 +299,7 @@ class Season(object):
                             print(scores)
                             print(listscore)
                             return tie_d(teamnow, tielist, sbn)
-            '''
+
             def tie_d(teamnow, tielist, sbn):
                 
                 def in_same_divi(tielist, sbn):
@@ -345,15 +309,12 @@ class Season(object):
                             return False
                     return True
 
-                def division_leader_win(teamnow, tielist, sbn):
+                def division_leader_win(self, teamnow, tielist, sbn):
                     # 1 im leader
                     # 2 other is leader and im not
                     # 0 the other
                     teamnowdivi = self.get_divi_list(teamnow)
-                    tlist = list()
-                    for ele in self.teamslist.teamlist:
-                        tlist.append(self.teamslist.teamlist[ele])
-                    flag = sbn.f_in_list(teamnow, teamnowdivi, tlist)
+                    flag = sbn.f_in_list(teamnow, teamnowdivi, self.teamlist)
                     # f_in_list
                     # 1 first in list
                     # 0 tie first in list
@@ -361,13 +322,13 @@ class Season(object):
                     if flag == 2:
                         for team in tielist:
                             teamdivi = self.get_divi_list(team)
-                            if sbn.f_in_list(team, teamdivi, tlist) != 2:
+                            if sbn.f_in_list(team, teamdivi, self.teamlist) != 2:
                                 return 2
                         return 0
                     else:
                         for team in tielist:
                             teamdivi = self.get_divi_list(team)
-                            if sbn.f_in_list(team, teamdivi, tlist) != 2:
+                            if sbn.f_in_list(team, teamdivi, self.teamlist) != 2:
                                 return 0
                         return 1
 
@@ -388,7 +349,6 @@ class Season(object):
                     if in_same_divi(tielist, sbn):
                         # if teamnow is high: return True else: return False
                         # get divilist
-                        divilist = self.get_divi_list(tielist[0])
                         flag = sbn.f_in_list(teamnow, tielist, divilist)
                         if flag == 1:
                             return True
@@ -396,7 +356,6 @@ class Season(object):
                             return False                        
                     # 4
                     # get conflist
-                    conflist = self.get_conf_list(tielist[0])
                     flag = sbn.f_in_list(teamnow, tielist, conflist)
                     if flag == 1:
                         return True
@@ -404,11 +363,6 @@ class Season(object):
                         return False
                     # 5
                     # get playofflist
-                    playofflist, _ = sbn.sort_by_lose(conflist)
-                    playofflist = playofflist[0:7]
-                    for ele in tielist:
-                        if ele not in playofflist:
-                            playofflist.append(ele)
                     flag = sbn.f_in_list(teamnow, tielist, playofflist)
                     if flag == 1:
                         return True
@@ -433,25 +387,18 @@ class Season(object):
                     if in_same_divi(tielist, sbn):
                         # if teamnow is high: return True else: return False
                         # get divilist
-                        divilist = self.get_divi_list(tielist[0])
                         flag = sbn.f_in_list(teamnow, tielist, divilist)
                         if flag == 1:
                             return True
                         if flag == 2:
                             return False   
                     # 4
-                    conflist = self.get_conf_list(tielist[0])
                     flag = sbn.f_in_list(teamnow, tielist, conflist)
                     if flag == 1:
                         return True
                     if flag == 2:
                         return False
                     # 5
-                    playofflist, _ = sbn.sort_by_lose(conflist)
-                    playofflist = playofflist[0:7]
-                    for ele in tielist:
-                        if ele not in playofflist:
-                            playofflist.append(ele)
                     flag = sbn.f_in_list(teamnow, tielist, playofflist)
                     if flag == 1:
                         return True
@@ -483,10 +430,6 @@ class Season(object):
         end = self.wholegame.gamelist[len(self.wholegame.gamelist)].date
         eastlist = self.get_conf_list('Boston Celtics')
         westlist = self.get_conf_list('Golden State Warriors')
-        #------------------------------------
-        #------------------------------------
-        d1 = datetime.datetime.strptime('4/10/2017','%m/%d/%Y')
-        now = d1
         while now <= end:
             #---------------------------------------------------
             print(now)
@@ -497,8 +440,6 @@ class Season(object):
             escorelist, escores = sb.sort_by_lose(eastlist)
             wlast = find_last(wscorelist, wscores, self.outlist)
             elast = find_last(escorelist, escores, self.outlist)
-            #--------------------------------------------
-            print(escorelist, escores)
             if wlast != []:
                 for last in wlast:
                     sbn = copy.deepcopy(sb)

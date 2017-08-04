@@ -23,7 +23,7 @@ def write_outlist(outlist):
     wb = Workbook()
     ws = wb.active
     ws.title = 'NBA_Clinch_Dates'
-    i = 0
+    i = 1
     ws.cell(row=1, column=1, value='Team')
     ws.cell(row=1, column=2, value='Date Eliminated')
     for ele in outlist:

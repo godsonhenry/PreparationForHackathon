@@ -245,7 +245,7 @@ class Season(object):
                         if listscore[ii] == teamnow:
                             position = ii
                     if position < 7:
-                        #print('1',teamnow)
+                        print('1',teamnow)
                         return True
                     for j in range(topi, i+1):
                         if listscore[j] != teamnow:
@@ -275,7 +275,7 @@ class Season(object):
                         if listscore[ii] == teamnow:
                             position = ii
                     if position < 7:
-                        #print('2',teamnow)
+                        print('2',teamnow)
                         return True
                     while remains != 0:
                         remains = step2(remains, sbn, tlist, glist)
@@ -296,7 +296,7 @@ class Season(object):
                                 else:
                                     break
                     if position <= 7:
-                        #print('3',teamnow)                     
+                        print('3',teamnow)                     
                         return True
                     else:
                         if scores[position] > scores[7]:
@@ -474,11 +474,11 @@ class Season(object):
         eastlist = self.get_conf_list('Boston Celtics')
         westlist = self.get_conf_list('Golden State Warriors')
         ######
-        #now = datetime.datetime.strptime('3/16/2017','%m/%d/%Y')
+        now = datetime.datetime.strptime('3/16/2017','%m/%d/%Y')
         while now <= end:
             ###########################
-            #print(now)
-            #print(self.outlist)
+            print(now)
+            print(self.outlist)
             nowgame = copy.deepcopy(self.wholegame)
             sb = ScoreBoard(self.teamslist, nowgame, now)
             wscorelist, wscores = sb.sort_by_lose(westlist)

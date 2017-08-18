@@ -1,0 +1,128 @@
+Question: 
+  
+When are teams eliminated from playoff contention? Using the results for the 2016-17 regular season as a test case for your quantitative solution, please generate the date that each team was eliminated from playoff contention.  
+We are purely looking for a date when a team was eliminated from playoff consideration, not any specific seed. Please note that your solution should generate the dates automatically, and should use code-based or Excel-based tools.  
+To aid your work, click on this LINK for a .pdf file of the NBA Tiebreaker rules and an .xlsx file with the following three tabs 1) Divisions for the 2016-17 Season, 2) The game results for the 2016-17 NBA Regular Season, 3) A sample that includes the correct formatting for your final submission.  
+Please note that teams that qualified for the playoffs should be labeled "Playoffs" and the date a team is eliminated should be reported in text format, not Excel Date format. 
+  
+  
+Input: 
+  
+A .xlsx file named "Analytics_Attachment.xlsx". In the file, there are three sheets: "Division_Info", "2016_17_NBA_Scores", "Sample_NBA_Clinch_Dates".  
+In sheet "Division_Info", there are three columns, with name in the first line: "Team_Name", "Division_id", "Conference_id". They are all in the date type "general". 
+In sheet "2016_17_NBA_Scores", there are six columns: "Date", "Home Team", "Away Team", "Home Score", "Away Score", "Winner". They are in the date type "general", except "Date", which in "m/d/y" format. Also the column names are in the first line. 
+In sheet "Sample_NBA_Clinch_Dates", there are two columns: "Team", "Date Eliminated". With the column names in the first line, the data type of all teams is "general", but "Text" for the date. 
+  
+  
+Output: 
+  
+A .xlse file named "results.xlsx". The format of it will be the same as the sample in the inputs.  
+  
+  
+Brief solution: 
+  
+We are looking to decide when will a team stop having any chance to playoffs. In other words, if we know all the teams schedule of the whole season and all the game results before a certain date, how we decided a team has or has not a chance to play in playoffs. Which means, in all possible results in the future games, if there is one that can make this team into the playoffs, the team still has a chance, otherwise, it has no chance, and will be considered no chance after this date. 
+The solution is using Greedy algorithm: to create a "best" situation for the team in any certain date. If this situation cannot match the lowest demand for playoffs, then the team has no chance, otherwise, it still has hope. 
+So this is how to create this "best situation": 
+1. Let our team wins all the games in the future. 
+2. Sort the teams in our conference by their advantage against our team. 
+3. Let the first 7 teams win against the other 7 teams in the same conference. 
+4. The 7 teams left should lose to the other conference, and try to get an average result in the games left. 
+5. In this case, if our team still cannot get the 8th position in the conference, we can say it is out. 
+Still there are many words being still unclear in this description. For example, what is the advantage against the team? What is an average result, the last 7 teams should get? And how to achieve that situation? I will answer all these in next parts. 
+But the whole process is quite clear, let 7 teams win, let the rest get an average result, which make the first in the rest be as low as possible. If our team cannot get an edge in this situation, our team will not have any hope. 
+Quick question, why 7 teams wins? Is it better than let 6 teams win, or 5 teams win? Yes, it is better. Think this situation: if now we let 6 teams win, now our team win 40 at 7th position, the two teams are now wins 39, but they still have 4 games remains to play with each other. If we let them get a average, they will both become 41 and let out team become the 9th. But if we let one team wins, our team will be the 8th.   
+  
+  
+Solution: 
+  
+In this part, let's go to details. 
+Firstly, this solution will not consider the tie-break rule 2 teams tied (6), "Better winning percentage against teams eligible for the playoffs in other conference (including teams that finished the regular season tied for a playoff position)". We will discuss this in the limits. 
+I am trying to make the unclear words for "best situation" clear.  
+1. Let our team wins all the games in the future. 
+This is clear. So, our team will have a best ranking. 
+2. Sort the teams in our conference by their advantage against our team. 
+First, the advantage should be considered as win and lose. If a team can possible wins more in the future, it should be considered had advantage. Which means if a team wins 1, lose 0, remains 81, if better than a team wins 2, lose 2, remains 78, because the latter has a chance to win 80, the former can win 82. This means the former can make the rest teams lose more, this does not guarantee the 9th team in the will lose more, but it can guarantee the 9th team won't lose less. So, choosing a better potential winning team is better than choosing a worse team. And because we are actually choosing a team has high (won games + remain games), so we can sort the teams by their lost games, since lost = total - won - remain. 
+Second, about the advantage, we did not consider the tie-break rules here, which means we will try all sequence of the tie teams. This is because the tie-break rules included other teams' game results. For example, in a certain date, it is unclear that to decide a team can be a division leader or not. 
+3. Let the first 7 teams win against the other 7 teams in the same conference. 
+4. The 7 teams left should try to get a average results in the games left. 
+These two processes are to get a as low as possible 9th ranking team. I have already said why in the second point. Now we will discuss how. Because the other conference ranking will not influence our ranking. And the ranking inside the 7 teams will not influence the 9th team win or lose to the 8th team, even not to the tiebreak rules. So, in the 3rd process, we can let the first team wins all the games remains, then the second team do the same thing. And how to make the last 7 teams has an average result? We can find the top team in the last 7, and the last team in the last 7, then make the latter win a remain games between them. If top team or last team has no remain games to play, we try middle teams. And for each this game played, we resort the teams. Because we resort the list every time we let a team win, so we always let the low rank team wins, in other words, we keep the 9th team lose, so it will be as low as possible. When you thinking this, try not focus on one team, but try focus on the 9th position, no matter which team is the 9th team, the 9th team always lose in this way, so it will less competitive advantage against our team, the 8th team. 
+After all these 4 processes, let's look at what we have here. We have all the games played in first 7 teams, we have all games our team played, and the last 7 teams played. The only games uncertain is the games the other side conference teams played with each other. So, the information is enough for us to decide the tiebreak.  
+And about the tiebreak rule. The last one always useless when we do not at the last date. The “point differential”. Simply because we will never know how much points differential can a game create.  
+So, after all this, we could say that we find the solution. 
+  
+  
+Program Structure: 
+  
+module: 
+There are three modules: main, readwrite, season. The main modules show the basic. The readwrite modules used to read the files and write out the results. The season module is the core.  
+  
+class: 
+I will talk only the class in season.  
+Class Team has the teams' information, and the class Teamslist is the dict of all the Teams. Same for class Game and GamesList.  
+Class ScoreBoard is a class has the teamlist and gamelist, so we could get the win and lose of each team from it. And the ScoreBoard has a date, which means the games after this date is not yet played. 
+Class Season is the core class, deal with all the competitions. 
+  
+function: 
+I will talk only the functions in season.  
+Function run() is used to run the test from the first date of the gamelist to the end. For each date, to find the last teams in both conference to see whether they have hope or not. Question, is it possible that two teams with different score be out at the same day? Yes, it is possible. So, we need to check all 7 teams except the teams which are already in the outlist. Which make the program very slow. About 15mins, in my computer. 
+Function hope() is used to see whether the team has hope in certain date. 
+Function step1() introduced because we need to try out all possible when teams are ties in first 7. 
+Function step2() introduced to do the last 7 average. 
+Function tie_d() used for tiebreak. 
+  
+  
+Limits: 
+  
+The biggest limits here is that my solution cannot solve the tie-break rule '2 Teams Tied (6)' : "(6) Better winning percentage against teams eligible for the playoffs in other conference (including teams that finished the regular season tied for a playoff position)". If we need this rule works, we need to know which teams will played playoffs in the other conferences. Even with all these we discussed before, we try to get as much games to be certain as possible, the remains games can still be 20 or more. Which means we cannot try them out. It will need 2^20 competitions. So, my solution cannot cover this rule. 
+  
+Appendix: 
+tie-break rules: 
+The following outlines the NBA's playoff tie-break rules and procedures based 
+on the final regular season standings: 
+Tiebreaker Basis – 2 Teams Tied 
+(-) Tie breaker not needed (better overall winning percentage) 
+(1) Better winning percentage in games against each other 
+(2) Division leader wins a tie over a team not leading a division 
+(3) Division won-lost percentage (only if teams are in same division) 
+(4) Conference won-lost percentage 
+(5) Better winning percentage against teams eligible for the playoffs in own 
+conference (including teams that finished the regular season tied for a playoff 
+position) 
+(6) Better winning percentage against teams eligible for the playoffs in other 
+conference (including teams that finished the regular season tied for a playoff 
+position) 
+(7) Better net result of total points scored less total points allowed against all 
+opponents (“point differential”) 
+Tiebreaker Basis – Three or More Teams Tied 
+(-) Tie breaker not needed (better overall winning percentage) 
+(1) Division leader wins tie from team not leading a division (this criterion is 
+applied regardless of whether the tied teams are in the same division) 
+(2) Better winning percentage in all games among the tied teams 
+(3) Division won-lost percentage (only if all teams are in same division) 
+(4) Conference won-lost percentage 
+(5) Better winning percentage against teams eligible for the playoffs in own 
+conference (including teams that finished the regular season tied for a playoff 
+position) 
+(6) Better net result of total points scored less total points allowed against all 
+opponents (“point differential”) 
+Playoff Tie-Break Procedures 
+(1) (a) Ties to determine the division winners must be broken before any other 
+ties. 
+(b) When a tie must be broken to determine a division winner, the results of 
+the tie-break shall be used to determine only the division winner, and not 
+for any other purpose. 
+(c) When three or more teams are tied, teams will be assigned a seeding 
+based on the multi-team tiebreaker basis above. If three or more teams 
+have equivalent records, the first tiebreaker criteria that creates 
+differentiation applies. If two or more teams remain tied after applying 
+that criteria, the team(s) that are not tied are assigned their seed and the 
+tiebreaker criteria restarts with the remaining teams. 
+Example: Teams A, B, and C are all tied at the end of the season. None of 
+the teams are division winners, and Team A had a 4-0 record in common  
+games, and Teams B and C had a 1-3 record in common games. Team A 
+would receive the highest seed, and the 2 Team tiebreaker would then 
+apply to Teams B and C to determine their relative seed. 
+(2) If application of the criteria in subparagraph a. or b. does not result in the 
+breaking of a tie, the playoff positions of the tied teams will be 
+determined by a random drawing.  

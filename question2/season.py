@@ -2,11 +2,13 @@
 import datetime
 import copy
 
+
 class Team(object):
     def __init__(self, teamname, diviname, confiname):
         self.name = teamname
         self.diviname = diviname
         self.confiname = confiname
+
 
 class TeamsList(object):
 
@@ -22,6 +24,7 @@ class TeamsList(object):
             t = self.teamlist[team]
             print(t.name, t.diviname, t.confiname)
 
+
 class Game(object):
 
     def __init__(self, date, home, away, win):
@@ -32,6 +35,7 @@ class Game(object):
             self.win = self.home
         else:
             self.win = self.away 
+
 
 class GamesList(object):
 
@@ -168,9 +172,7 @@ class ScoreBoard(object):
         return 0
 
 
-
 class Season(object):
-    
     
     def __init__(self, teamlist, gamelist):
         self.teamslist = teamlist
@@ -210,12 +212,23 @@ class Season(object):
                 confilist.append(othername)
         return confilist
 
-
     def run(self):
-        
+        '''
+        from the first date of the gamelist to the end.
+        get the last team which is not in the outlist of one conference.
+        see if it has a hope to play in playoffs.
+        '''    
+
         def hope(teamnow, sbn):
+            '''
+            see if a team still have a chance to play in the playoffs.
+            '''
 
             def step1(i, times, teamnow, sbn):
+                '''
+                let the frist 7 teams win
+                '''
+
                 conflist = self.get_conf_list(teamnow)
                 listscore, scores = sbn.sort_by_lose(conflist)
                 if times<7:
@@ -225,6 +238,15 @@ class Season(object):
                         i += 1
                     while scores[i] == scores[i+1]:
                         i += 1
+                        if i+1 == len(scores):
+                            break
+                    position = 0
+                    for ii in range(0, len(listscore)):
+                        if listscore[ii] == teamnow:
+                            position = ii
+                    if position < 7:
+                        #print('1',teamnow)
+                        return True
                     for j in range(topi, i+1):
                         if listscore[j] != teamnow:
                             #swicth (topi, j)
@@ -245,13 +267,19 @@ class Season(object):
                     sbn.lose_to_list(conflist, otherconf)
                     # remaining games
                     glist, tlist = sbn.get_remain_games_list(conflist)
-
                     # average process step2(remains, teamnow, sbn, teamlist, gamelist)
                     remains = len(glist)
+                    listscore, scores = sbn.sort_by_lose(conflist)
+                    position = 0
+                    for ii in range(0, len(listscore)):
+                        if listscore[ii] == teamnow:
+                            position = ii
+                    if position < 7:
+                        #print('2',teamnow)
+                        return True
                     while remains != 0:
                         remains = step2(remains, sbn, tlist, glist)
-                    
-
+                    listscore, scores = sbn.sort_by_lose(conflist)
                     position = 0
                     for ii in range(0, len(listscore)):
                         if listscore[ii] == teamnow:
@@ -268,12 +296,7 @@ class Season(object):
                                 else:
                                     break
                     if position <= 7:
-                        #----------------------------------
-                        #----------------------------------
-                        #----------------------------------
-                        #print(teamnow, 'win')
-                        #print(scores)
-                        #print(listscore)                        
+                        #print('3',teamnow)                     
                         return True
                     else:
                         if scores[position] > scores[7]:
@@ -283,106 +306,30 @@ class Season(object):
                             for ii in range(0,len(listscore)):
                                 if scores[ii] == scores[position]:
                                     tielist.append(listscore[ii])
-                            #----------------------------------
-                            #----------------------------------
-                            #----------------------------------
-                            #print('tie', tielist)
-                            #print(scores)
-                            #print(listscore)
                             return tie_d(teamnow, tielist, sbn)
 
-
-
-
             def step2(remains, sbn, teamlist, gamelist):
-                #conflist = self.get_conf_list(teamnow)
-                #listscore, scores = sbn.sort_by_lose(conflist)   
+                '''
+                make the remains stay in average
+                '''
+
                 leavelist, _ = sbn.sort_by_lose(teamlist)
                 high = leavelist[0]
                 low = leavelist[-1]
                 for high in range(0, len(leavelist)):
                     for low in reversed(range(high, len(leavelist))):
                         for i in gamelist:
-                            if (((sbn.gamelist[i].home == high) or (sbn.gamelist[i].away == high)) 
-                                and ((sbn.gamelist[i].home == low) or (sbn.gamelist[i].away == low))):
-                                    sbn.gamelist[i].win = low
-                                    gamelist.remove(i)
-                                    return remains-1
+                            if (((sbn.gamelist[i].home == high) or (sbn.gamelist[i].away == high)) and
+                                ((sbn.gamelist[i].home == low) or (sbn.gamelist[i].away == low))):
+                                sbn.gamelist[i].win = low
+                                gamelist.remove(i)
+                                return remains-1
                 return 0
 
-
-
-                
-
-                
-
-            '''
-            def dfs(remains, teamnow, sbn, teamlist, gamelist):
-                conflist = self.get_conf_list(teamnow)
-                listscore, scores = sbn.sort_by_lose(conflist)                
-                #------------------------------------
-                remains == 0
-                if remains != 0:
-                    
-
-                    # dfs()
-                    
-                    ii = len(gamelist) - remains
-                    sbn.gamelist[gamelist[ii]].win = sbn.gamelist[gamelist[ii]].home
-                    #--------------------------------------------------
-                    print(teamnow, 'home',remains)
-                    if dfs(remains-1, teamnow, sbn, teamlist, gamelist):
-                        return True
-                    sbn.gamelist[gamelist[ii]].win = sbn.gamelist[gamelist[ii]].away
-                    #--------------------------------------------------
-                    print(teamnow, 'away',remains)
-                    if dfs(remains-1, teamnow, sbn, teamlist, gamelist):
-                        return True
-                    return False
-                    
-                else:
-                    position = 0
-                    for ii in range(0, len(listscore)):
-                        if listscore[ii] == teamnow:
-                            position = ii
-                            if ii+1 < len(listscore):
-                                if scores[ii] == scores[ii+1]:
-                                    #swicth ii, ii+1
-                                    temp = listscore[ii]
-                                    listscore[ii] = listscore[ii+1]
-                                    listscore[ii+1] = temp
-                                    tmp = scores[ii]
-                                    scores[ii] = scores[ii+1]
-                                    scores[ii+1] = tmp
-                                else:
-                                    break
-                    if position <= 7:
-                        #----------------------------------
-                        #----------------------------------
-                        #----------------------------------
-                        print('win')
-                        print(scores)
-                        print(listscore)                        
-                        return True
-                    else:
-                        if scores[position] > scores[7]:
-                            return False
-                        else:
-                            tielist = list()
-                            for ii in range(0,len(listscore)):
-                                if scores[ii] == scores[position]:
-                                    tielist.append(listscore[ii])
-                            #----------------------------------
-                            #----------------------------------
-                            #----------------------------------
-                            print('tie', tielist)
-                            print(scores)
-                            print(listscore)
-                            return tie_d(teamnow, tielist, sbn)
-                    '''
-
-
             def tie_d(teamnow, tielist, sbn):
+                '''
+                decided a tie
+                '''
                 
                 def in_same_divi(tielist, sbn):
                     diviname = sbn.teamlist[tielist[0]].diviname
@@ -400,10 +347,6 @@ class Season(object):
                     for ele in self.teamslist.teamlist:
                         tlist.append(self.teamslist.teamlist[ele])
                     flag = sbn.f_in_list(teamnow, teamnowdivi, tlist)
-                    # f_in_list
-                    # 1 first in list
-                    # 0 tie first in list
-                    # 2 the other
                     if flag == 2:
                         for team in tielist:
                             teamdivi = self.get_divi_list(team)
@@ -433,7 +376,6 @@ class Season(object):
                     # 3
                     if in_same_divi(tielist, sbn):
                         # if teamnow is high: return True else: return False
-                        # get divilist
                         divilist = self.get_divi_list(tielist[0])
                         flag = sbn.f_in_list(teamnow, tielist, divilist)
                         if flag == 1:
@@ -441,7 +383,6 @@ class Season(object):
                         if flag == 2:
                             return False                        
                     # 4
-                    # get conflist
                     conflist = self.get_conf_list(tielist[0])
                     flag = sbn.f_in_list(teamnow, tielist, conflist)
                     if flag == 1:
@@ -449,7 +390,6 @@ class Season(object):
                     if flag == 2:
                         return False
                     # 5
-                    # get playofflist
                     playofflist, _ = sbn.sort_by_lose(conflist)
                     playofflist = playofflist[0:7]
                     for ele in tielist:
@@ -478,7 +418,6 @@ class Season(object):
                     # 3
                     if in_same_divi(tielist, sbn):
                         # if teamnow is high: return True else: return False
-                        # get divilist
                         divilist = self.get_divi_list(tielist[0])
                         flag = sbn.f_in_list(teamnow, tielist, divilist)
                         if flag == 1:
@@ -504,22 +443,27 @@ class Season(object):
                     if flag == 2:
                         return False                       
                 return True
-            
+
             sbn.win_all(teamnow)
             times = 0
             i = 0
             return step1(i, times, teamnow, sbn)
-
+            
         def find_last(scorelist, scores, outlist):
             last = list()
             flag = True
             for i in reversed(range(len(scorelist))):
+                if scores[i] <= 21:
+                    break
                 if not flag:
                     if (scores[i] == scores[i+1]) and (scorelist[i] not in outlist):
                         last.append(scorelist[i])
                     else:
                         break
-                if flag and i>7:
+                if i>8:
+                    if scorelist[i] not in outlist:
+                        last.append(scorelist[i])
+                if flag and i == 8:
                     if scorelist[i] not in outlist:
                         last.append(scorelist[i])
                         flag = False
@@ -529,22 +473,18 @@ class Season(object):
         end = self.wholegame.gamelist[len(self.wholegame.gamelist)].date
         eastlist = self.get_conf_list('Boston Celtics')
         westlist = self.get_conf_list('Golden State Warriors')
-        #------------------------------------
-        #------------------------------------
-        #d1 = datetime.datetime.strptime('2/5/2017','%m/%d/%Y')
-        #now = d1
+        ######
+        #now = datetime.datetime.strptime('3/16/2017','%m/%d/%Y')
         while now <= end:
-            #---------------------------------------------------
-            print(now)
-            print(self.outlist)
+            ###########################
+            #print(now)
+            #print(self.outlist)
             nowgame = copy.deepcopy(self.wholegame)
             sb = ScoreBoard(self.teamslist, nowgame, now)
             wscorelist, wscores = sb.sort_by_lose(westlist)
             escorelist, escores = sb.sort_by_lose(eastlist)
             wlast = find_last(wscorelist, wscores, self.outlist)
             elast = find_last(escorelist, escores, self.outlist)
-            #--------------------------------------------
-            #print(escorelist, escores)
             if wlast != []:
                 for last in wlast:
                     sbn = copy.deepcopy(sb)
@@ -562,9 +502,7 @@ class Season(object):
             if teamname not in self.outlist:
                 self.outlist.append(teamname)
                 self.outlistdate[teamname] = 'Playoff'
-        for ele in self.outlistdate:
-            print(ele, self.outlistdate[ele])
-    
+
     def get_outlist(self):
         return self.outlistdate
     
@@ -574,23 +512,3 @@ if __name__ == '__main__':
     season = Season(team, game)
     season.run()
     season.get_outlist()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

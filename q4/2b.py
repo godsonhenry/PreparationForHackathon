@@ -1,5 +1,6 @@
 
 # coding: utf-8
+
 '''
 Here I write a simulator as season()
 It will simulate the Playoffs and return the results of each round.
@@ -20,7 +21,9 @@ for i in range(16):
     for j in range(16):
         wins[i][j] = 0.0
 i = 1
+
 # west team will have small numbers
+
 while i < len(ws['A']):
     if ws['A'][i].value[0] == 'W':
         home = int(ws['A'][i].value[4]) - 1
@@ -33,6 +36,8 @@ while i < len(ws['A']):
     wins[home][away] = ws['C'][i].value
     wins[away][home] = 1-ws['D'][i].value
     i += 1
+
+
 
 
 wb = load_workbook(filename = 'Business-Track-Application-Datasets.xlsx')
@@ -61,6 +66,7 @@ ht = dict()
 ht = htclear(ht)
 
 
+
 def t2wins(ph, pa):
     # calculate the probability the game will finish in N games
     pa = 1 - pa
@@ -84,8 +90,8 @@ def t2wins(ph, pa):
 
 
 def macths(tt1,tt2):
-    # calculate a macth of two certain teams
-    if (tt2 < tt1 and tt1 < 8) or (tt2 + 8 < tt1):
+        # calculate a macth of two certain teams
+    if (tt2 < tt1 and tt1 < 8) or (tt2 >= 8 and tt1 > tt2) or (tt2 + 8 < tt1):
         t1, t2 = tt2, tt1
     else:
         t1, t2 = tt1, tt2
@@ -123,7 +129,7 @@ def macths(tt1,tt2):
     ht[j][t1] = t1h
     ht[j][t2] = t2h
     return winner
-
+    
 
 def season():
     # this is the main simulator for the Playoffs
@@ -144,7 +150,6 @@ def season():
     round_four_win_list = macths(round_three_win_list[0],round_three_win_list[1])
     return round_one_win_list, round_two_win_list, round_three_win_list, round_four_win_list
 
-
 def revenue(t):
     # a revenue function, which will return a certain team total gate revenue given a ceratin
     # simulator
@@ -153,7 +158,9 @@ def revenue(t):
         total += rev[t][i] * ht[i][t]
     return total
 
+
 # show a distribution for question c
+
 n = 100000
 dis = []
 for i in range(n):

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Untitled</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Prob-problem</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11773,224 +11773,32 @@ div#notebook {
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Q1:-After-the-Golden-State-Warriors-acquired-former-MVP-Kevin-Durant-in-2016,-some-NBA-fans-speculated-that-the-Warriors-would-not-lose-consecutive-games-at-any-point-of-the-season.">Q1: After the Golden State Warriors acquired former MVP Kevin Durant in 2016, some NBA fans speculated that the Warriors would not lose consecutive games at any point of the season.<a class="anchor-link" href="#Q1:-After-the-Golden-State-Warriors-acquired-former-MVP-Kevin-Durant-in-2016,-some-NBA-fans-speculated-that-the-Warriors-would-not-lose-consecutive-games-at-any-point-of-the-season.">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="a)-If-you-wanted-to-determine-the-probability-that-this-prediction-would-be-true-(i.e.,-that-the-Warriors-would-never-lose-consecutive-games-at-any-point-during-an-82-game-season),-what-is-one-approach-(or-a-few-approaches)-you-may-use-to-solve-the-problem?-What-answer-do-you-get?-Exact-answers-are-of-course-welcome,-but-approaches-that-lead-to-approximations-(and-those-approximations)-are-fine,-too-(please-specify-the-precision-of-your-estimate).-Assume-the-Warriors-have-an-80%-chance-of-winning-each-individual-game.">a) If you wanted to determine the probability that this prediction would be true (i.e., that the Warriors would never lose consecutive games at any point during an 82-game season), what is one approach (or a few approaches) you may use to solve the problem? What answer do you get? Exact answers are of course welcome, but approaches that lead to approximations (and those approximations) are fine, too (please specify the precision of your estimate). Assume the Warriors have an 80% chance of winning each individual game.<a class="anchor-link" href="#a)-If-you-wanted-to-determine-the-probability-that-this-prediction-would-be-true-(i.e.,-that-the-Warriors-would-never-lose-consecutive-games-at-any-point-during-an-82-game-season),-what-is-one-approach-(or-a-few-approaches)-you-may-use-to-solve-the-problem?-What-answer-do-you-get?-Exact-answers-are-of-course-welcome,-but-approaches-that-lead-to-approximations-(and-those-approximations)-are-fine,-too-(please-specify-the-precision-of-your-estimate).-Assume-the-Warriors-have-an-80%-chance-of-winning-each-individual-game.">&#182;</a></h3>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># coding: utf-8</span>
-
-<span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">Here I write a simulator as season()</span>
-<span class="sd">It will simulate the Playoffs and return the results of each round.</span>
-<span class="sd">Also a function called revenue(teamnumber) could return the total gate revenue</span>
-<span class="sd">of a team, given a certain simulator.</span>
-<span class="sd">&#39;&#39;&#39;</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">random</span>
-<span class="kn">from</span> <span class="nn">openpyxl</span> <span class="k">import</span> <span class="n">load_workbook</span><span class="p">,</span> <span class="n">Workbook</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-
-
-<span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;win_probabilities.xlsx&#39;</span><span class="p">)</span>
-<span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="s1">&#39;win_probabilities.csv&#39;</span><span class="p">]</span>
-<span class="n">wins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">16</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
-        <span class="n">wins</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
-
-<span class="c1"># west team will have small numbers</span>
-
-<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]):</span>
-    <span class="k">if</span> <span class="n">ws</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
-        <span class="n">home</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">home</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="mi">7</span>
-    <span class="k">if</span> <span class="n">ws</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;W&#39;</span><span class="p">:</span>
-        <span class="n">away</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">away</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="s1">&#39;B&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">+</span> <span class="mi">7</span>
-    <span class="n">wins</span><span class="p">[</span><span class="n">home</span><span class="p">][</span><span class="n">away</span><span class="p">]</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">wins</span><span class="p">[</span><span class="n">away</span><span class="p">][</span><span class="n">home</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">ws</span><span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-
-
-
-
-<span class="n">wb</span> <span class="o">=</span> <span class="n">load_workbook</span><span class="p">(</span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;Business-Track-Application-Datasets.xlsx&#39;</span><span class="p">)</span>
-<span class="n">ws</span> <span class="o">=</span> <span class="n">wb</span><span class="p">[</span><span class="s1">&#39;Hypothetical Playoff Gate Data&#39;</span><span class="p">]</span>
-<span class="n">rev</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">19</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">11</span><span class="p">:</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">8</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">k</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">8</span>
-        <span class="n">rev</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">3</span><span class="p">][</span><span class="n">j</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-
-
-<span class="k">def</span> <span class="nf">htclear</span><span class="p">(</span><span class="n">ht</span><span class="p">):</span>
-    <span class="c1"># clean hashtable</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">random</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">ht</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
-            <span class="n">ht</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">return</span> <span class="n">ht</span>
-<span class="n">ht</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">ht</span> <span class="o">=</span> <span class="n">htclear</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
-
-
-
-<span class="k">def</span> <span class="nf">t2wins</span><span class="p">(</span><span class="n">ph</span><span class="p">,</span> <span class="n">pa</span><span class="p">):</span>
-    <span class="c1"># calculate the probability the game will finish in N games</span>
-    <span class="n">pa</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">pa</span>
-    <span class="n">w4</span> <span class="o">=</span> <span class="n">ph</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pa</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">w5</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ph</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">ph</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">))</span><span class="o">*</span><span class="n">ph</span>
-    <span class="n">w6</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">ph</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">ph</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">ph</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">*</span><span class="n">pa</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">))</span><span class="o">*</span><span class="n">pa</span>
-    <span class="n">w7</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">3</span>
-          <span class="o">+</span> <span class="n">ph</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
-          <span class="o">+</span> <span class="mi">9</span><span class="o">*</span><span class="n">ph</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">*</span><span class="n">pa</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-          <span class="o">+</span> <span class="mi">9</span><span class="o">*</span><span class="n">ph</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">))</span> <span class="o">*</span> <span class="n">ph</span>
-    <span class="n">ph</span><span class="p">,</span> <span class="n">pa</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">pa</span>
-    <span class="n">w4</span> <span class="o">+=</span> <span class="n">ph</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pa</span><span class="o">**</span><span class="mi">2</span>
-    <span class="n">w5</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">ph</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">ph</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">))</span><span class="o">*</span><span class="n">ph</span>
-    <span class="n">w6</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">ph</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">ph</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">ph</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">*</span><span class="n">pa</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">))</span><span class="o">*</span><span class="n">pa</span>
-    <span class="n">w7</span> <span class="o">+=</span> <span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">3</span>
-          <span class="o">+</span> <span class="n">ph</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
-          <span class="o">+</span> <span class="mi">9</span><span class="o">*</span><span class="n">ph</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">*</span><span class="n">pa</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-          <span class="o">+</span> <span class="mi">9</span><span class="o">*</span><span class="n">ph</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">ph</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">pa</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">pa</span><span class="p">))</span> <span class="o">*</span> <span class="n">ph</span>    
-    
-    <span class="k">return</span> <span class="p">[</span><span class="n">w4</span><span class="p">,</span> <span class="n">w5</span><span class="p">,</span> <span class="n">w6</span><span class="p">,</span> <span class="n">w7</span><span class="p">]</span>
-
-
-<span class="k">def</span> <span class="nf">macths</span><span class="p">(</span><span class="n">tt1</span><span class="p">,</span><span class="n">tt2</span><span class="p">):</span>
-        <span class="c1"># calculate a macth of two certain teams</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">tt2</span> <span class="o">&lt;</span> <span class="n">tt1</span> <span class="ow">and</span> <span class="n">tt1</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">tt2</span> <span class="o">&gt;=</span> <span class="mi">8</span> <span class="ow">and</span> <span class="n">tt1</span> <span class="o">&gt;</span> <span class="n">tt2</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">tt2</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">&lt;</span> <span class="n">tt1</span><span class="p">):</span>
-        <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">tt2</span><span class="p">,</span> <span class="n">tt1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">t1</span><span class="p">,</span> <span class="n">t2</span> <span class="o">=</span> <span class="n">tt1</span><span class="p">,</span> <span class="n">tt2</span>
-        
-    <span class="n">t1wins</span><span class="p">,</span> <span class="n">t2wins</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-    <span class="n">t1h</span><span class="p">,</span> <span class="n">t2h</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">t1wins</span><span class="o">&lt;</span><span class="mi">4</span> <span class="ow">and</span> <span class="n">t2wins</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">i</span><span class="o">==</span><span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span><span class="o">==</span><span class="mi">1</span> <span class="ow">or</span> <span class="n">i</span><span class="o">==</span><span class="mi">4</span> <span class="ow">or</span> <span class="n">i</span><span class="o">==</span><span class="mi">6</span><span class="p">:</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">wins</span><span class="p">[</span><span class="n">t1</span><span class="p">][</span><span class="n">t2</span><span class="p">]</span>
-            <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">wins</span><span class="p">[</span><span class="n">t2</span><span class="p">][</span><span class="n">t1</span><span class="p">]</span>
-            <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="n">random</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">p</span><span class="p">:</span>
-            <span class="n">t1wins</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                <span class="n">t1h</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">t2h</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">t2wins</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
-                <span class="n">t1h</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">t2h</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="k">if</span> <span class="n">t1wins</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="n">winner</span> <span class="o">=</span> <span class="n">t1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">winner</span> <span class="o">=</span> <span class="n">t2</span>
-    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">ht</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">t1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="n">ht</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">t1</span><span class="p">]</span> <span class="o">=</span> <span class="n">t1h</span>
-    <span class="n">ht</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">t2</span><span class="p">]</span> <span class="o">=</span> <span class="n">t2h</span>
-    <span class="k">return</span> <span class="n">winner</span>
-    
-
-<span class="k">def</span> <span class="nf">season</span><span class="p">():</span>
-    <span class="c1"># this is the main simulator for the Playoffs</span>
-    <span class="n">tlist</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
-    <span class="n">round_one_win_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">round_one_win_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macths</span><span class="p">(</span><span class="n">tlist</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">tlist</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="n">i</span><span class="p">]))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">round_one_win_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macths</span><span class="p">(</span><span class="n">tlist</span><span class="p">[</span><span class="mi">8</span><span class="o">+</span><span class="n">i</span><span class="p">],</span><span class="n">tlist</span><span class="p">[</span><span class="mi">15</span><span class="o">-</span><span class="n">i</span><span class="p">]))</span>
-    <span class="n">round_two_win_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-        <span class="n">round_two_win_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macths</span><span class="p">(</span><span class="n">round_one_win_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">round_one_win_list</span><span class="p">[</span><span class="mi">3</span><span class="o">-</span><span class="n">i</span><span class="p">]))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
-        <span class="n">round_two_win_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macths</span><span class="p">(</span><span class="n">round_one_win_list</span><span class="p">[</span><span class="mi">4</span><span class="o">+</span><span class="n">i</span><span class="p">],</span><span class="n">round_one_win_list</span><span class="p">[</span><span class="mi">7</span><span class="o">-</span><span class="n">i</span><span class="p">]))</span>
-    <span class="n">round_three_win_list</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">round_three_win_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macths</span><span class="p">(</span><span class="n">round_two_win_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">round_two_win_list</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="n">round_three_win_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">macths</span><span class="p">(</span><span class="n">round_two_win_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">round_two_win_list</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>        
-    <span class="n">round_four_win_list</span> <span class="o">=</span> <span class="n">macths</span><span class="p">(</span><span class="n">round_three_win_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">round_three_win_list</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">round_one_win_list</span><span class="p">,</span> <span class="n">round_two_win_list</span><span class="p">,</span> <span class="n">round_three_win_list</span><span class="p">,</span> <span class="n">round_four_win_list</span>
-
-<span class="k">def</span> <span class="nf">revenue</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-    <span class="c1"># a revenue function, which will return a certain team total gate revenue given a ceratin</span>
-    <span class="c1"># simulator</span>
-    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-        <span class="n">total</span> <span class="o">+=</span> <span class="n">rev</span><span class="p">[</span><span class="n">t</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">ht</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">total</span>
-
-
-<span class="c1"># show a distribution for question c</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-<div class="prompt"></div>
-
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/usr/local/lib/python3.5/dist-packages/openpyxl/reader/worksheet.py:310: UserWarning: Unknown extension is not supported and will be removed
-  warn(msg)
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">100000</span>
-<span class="n">dis</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="n">season</span><span class="p">()</span>
-    <span class="n">dis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revenue</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="n">htclear</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
-<span class="n">dis</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-<span class="n">htdis</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">dis</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">ele</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">htdis</span><span class="p">:</span>
-        <span class="n">htdis</span><span class="p">[</span><span class="n">ele</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">htdis</span><span class="p">[</span><span class="n">ele</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-<span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">y</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dis</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">htdis</span><span class="p">:</span>
-    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ele</span><span class="p">)</span>
-    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">htdis</span><span class="p">[</span><span class="n">ele</span><span class="p">]</span><span class="o">/</span><span class="n">n</span><span class="p">)</span>
-<span class="n">yy</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">))]</span>
-<span class="n">x</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># solution for the question:</span>
+<span class="c1"># if one event has P prob happenning, trying N times, what posibility it will happen m times straight,</span>
+<span class="c1"># or in other word, happenning consecutively in m times.  </span>
 </pre></div>
 
 </div>
@@ -12000,19 +11808,47 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000000</span>
-<span class="n">count</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">dis</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">season</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">]:</span>
-        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">dis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revenue</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="n">htclear</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">random</span>
+</pre></div>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dis</span><span class="p">))</span>
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># this is the example using simulation</span>
+<span class="c1"># nn, ll is the simulation times and the results</span>
+<span class="c1"># n is times that event happenning</span>
+<span class="c1"># p is the prob the event happening in one time.</span>
+<span class="c1"># m is the consecutive times you need to observe</span>
+<span class="n">nn</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">ll</span> <span class="o">=</span> <span class="mi">10000000</span><span class="p">,</span><span class="mi">82</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">nn</span><span class="p">):</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="n">rand</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">rand</span><span class="o">&lt;</span><span class="n">p</span><span class="p">):</span>
+            <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;=</span><span class="n">m</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">ll</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The chance they lose consecutive games&#39;</span><span class="p">,</span> <span class="n">ll</span><span class="o">/</span><span class="n">nn</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12027,7 +11863,7 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.38886 83869003.5892
+<pre>The chance they lose consecutive games 0.941253
 </pre>
 </div>
 </div>
@@ -12038,18 +11874,59 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000000</span>
-<span class="n">count</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">dis</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">season</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">]):</span>
-        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">dis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revenue</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="n">htclear</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dis</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># this is the final solution</span>
+<span class="c1"># let&#39;s assume that event CE means that the simple event happenning M times consecutively</span>
+<span class="c1"># X(n) means the prob that CE first happening at the n time.</span>
+<span class="c1"># Y(n) means the prob that CE happenning in the total time n, which we trying.</span>
+<span class="c1"># We will have the function:</span>
+<span class="c1"># X(n) = (1 - Y(n-2)) * Px</span>
+<span class="c1"># Y(n) = sum(X(n-1))</span>
+<span class="c1"># when Px = (1-p)*p**m </span>
+<span class="c1"># the boundry of X: X[0:m+1] = [p**m, px, ..., px], of Y: Y[0] = X[0]</span>
+<span class="c1"># the Y(n) will be the answer</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># set the boundary</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">82</span>
+<span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="n">px</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="o">**</span><span class="n">m</span>
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">**</span><span class="n">m</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">m</span><span class="p">):</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">px</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)):</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">px</span><span class="p">)</span>
+    <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="n">m</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;The chance they lose consecutive games&#39;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="c1"># we didnot calculate all the Yn, so y[-1] will not be the answer here.</span>
 </pre></div>
 
 </div>
@@ -12064,7 +11941,7 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.611064 60341987.063
+<pre>The chance they lose consecutive games 0.9411831355860739
 </pre>
 </div>
 </div>
@@ -12073,24 +11950,57 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="b)-So,-would-you-have-agreed-with-that-hypothesis?">b) So, would you have agreed with that hypothesis?<a class="anchor-link" href="#b)-So,-would-you-have-agreed-with-that-hypothesis?">&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Answer:-According-to-estimated-probability,-the-chance-for-that-Warriors-would-not-lose-consecutive-games-at-any-point-of-the-season-is-only-5%-6%.-It-was-a-tricky-question-because-statistically-the-confidence-interval-is-95%-normally,-the-hypothesis-of-5%-6%-probability-could-not-be-rejected.-However,-the-selection-of-confidence-interval-should-be-adjusted-based-on-business-setting.-At-the-condition-of-90%-confidence-interval,-the-hypothesis-could-be-rejected.">Answer: According to estimated probability, the chance for that Warriors would not lose consecutive games at any point of the season is only 5%-6%. It was a tricky question because statistically the confidence interval is 95% normally, the hypothesis of 5%-6% probability could not be rejected. However, the selection of confidence interval should be adjusted based on business setting. At the condition of 90% confidence interval, the hypothesis could be rejected.<a class="anchor-link" href="#Answer:-According-to-estimated-probability,-the-chance-for-that-Warriors-would-not-lose-consecutive-games-at-any-point-of-the-season-is-only-5%-6%.-It-was-a-tricky-question-because-statistically-the-confidence-interval-is-95%-normally,-the-hypothesis-of-5%-6%-probability-could-not-be-rejected.-However,-the-selection-of-confidence-interval-should-be-adjusted-based-on-business-setting.-At-the-condition-of-90%-confidence-interval,-the-hypothesis-could-be-rejected.">&#182;</a></h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="c)-Finally,-at-least-what-%-of-a-team's-games-would-a-team-need-to-be-expected-to-win-(assuming-that-win-probability-stays-constant-from-game-to-game)-for-there-to-be-a-greater-than-50%-chance-that-the-team-never-suffers-consecutive-losses-at-any-point-in-the-season?">c) Finally, at least what % of a team's games would a team need to be expected to win (assuming that win probability stays constant from game to game) for there to be a greater than 50% chance that the team never suffers consecutive losses at any point in the season?<a class="anchor-link" href="#c)-Finally,-at-least-what-%-of-a-team's-games-would-a-team-need-to-be-expected-to-win-(assuming-that-win-probability-stays-constant-from-game-to-game)-for-there-to-be-a-greater-than-50%-chance-that-the-team-never-suffers-consecutive-losses-at-any-point-in-the-season?">&#182;</a></h3>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000000</span>
-<span class="n">count</span> <span class="o">=</span> <span class="mf">0.0</span>
-<span class="n">dis</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
-    <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">season</span><span class="p">()</span>
-    <span class="k">if</span> <span class="p">(</span><span class="mi">5</span> <span class="ow">in</span> <span class="n">a</span><span class="p">):</span>
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>        
-        <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">c</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">8</span><span class="p">]):</span>
-            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="n">dis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">revenue</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">ht</span> <span class="o">=</span> <span class="n">htclear</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">count</span><span class="o">/</span><span class="n">n</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dis</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">changep</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">82</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">px</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">p</span><span class="o">**</span><span class="n">m</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">**</span><span class="n">m</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">m</span><span class="p">):</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">px</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">)):</span>
+        <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">1</span><span class="o">-</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">*</span><span class="n">px</span><span class="p">)</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="n">m</span><span class="p">]))</span>
+    <span class="k">return</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">p</span> <span class="o">=</span> <span class="mf">0.2</span>
+<span class="k">while</span> <span class="n">changep</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
+    <span class="n">p</span> <span class="o">-=</span> <span class="mf">0.00001</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;They need to be at this probability to win :&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">p</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12105,37 +12015,11 @@ div#notebook {
 <div class="prompt"></div>
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>0.621741 59670238.606
+<pre>They need to be at this probability to win : 0.9037800000000639
 </pre>
 </div>
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
-</pre></div>
-
-</div>
 </div>
 </div>
 
